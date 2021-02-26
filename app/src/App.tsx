@@ -16,11 +16,14 @@ interface IAppProps {
 }
 
 const App: React.FC<IAppProps> = (props) => {
+  
+  /*
   const keycloakInstanceConfig: KeycloakConfig = {
     realm: 'dfmlcg7z',
     url: 'https://dev.oidc.gov.bc.ca/auth/',
     clientId: 'invasives-bc'
   };
+
 
   //@ts-ignore
   const keycloak: KeycloakInstance = new Keycloak(keycloakInstanceConfig);
@@ -37,13 +40,14 @@ const App: React.FC<IAppProps> = (props) => {
   } else {
     keycloakConfig = { onLoad: 'login-required', checkLoginIframe: false };
   }
-
+  */
   const appRouterProps = {
     deviceInfo: props.deviceInfo,
-    keycloak,
-    keycloakConfig
+    //keycloak,
+    //keycloakConfig
   };
 
+  /*
   return (
     <Box height="100vh" width="100vw" display="flex" overflow="hidden">
       <ThemeProvider theme={appTheme}>
@@ -69,6 +73,32 @@ const App: React.FC<IAppProps> = (props) => {
       </ThemeProvider>
     </Box>
   );
+  */
+
+  return (
+    <Box height="100vh" width="100vw" display="flex" overflow="hidden">
+      <ThemeProvider theme={appTheme}>
+        <IonReactRouter>
+          <DatabaseContextProvider>
+            <DatabaseContext.Consumer>
+              {(databaseContext: IDatabaseContext) => {
+                if (!databaseContext.database) {
+                  // database not ready, delay loading app
+                  return <CircularProgress />;
+                }
+                return (
+                  <DatabaseChangesContextProvider>
+                    <AppRouter {...appRouterProps} />
+                  </DatabaseChangesContextProvider>
+                );
+              }}
+            </DatabaseContext.Consumer>
+          </DatabaseContextProvider>
+        </IonReactRouter>
+      </ThemeProvider>
+    </Box>
+    )
+
 };
 
 export default App;

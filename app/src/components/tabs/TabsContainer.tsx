@@ -1,9 +1,12 @@
 import { AppBar, CircularProgress, Tab, Tabs, Toolbar, Grid, makeStyles, Theme } from '@material-ui/core';
-import { Assignment, Bookmarks, Explore, HomeWork, Map, Search, Home } from '@material-ui/icons';
+import { Home, PostAdd, Dehaze, Settings } from '@material-ui/icons';
 import { ALL_ROLES } from 'constants/roles';
 import useKeycloakWrapper from 'hooks/useKeycloakWrapper';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import {
+  Button,
+} from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) => ({
   pointer: {
@@ -46,7 +49,7 @@ const TabsContainer: React.FC = () => {
         const pathsToMatchAgainst = [tabConfig[index].path, ...(tabConfig[index].childPaths || [])];
 
         // If the current url path contains any of the paths for a tab, return its index as the new active tab index.
-        if (
+        if (          
           pathsToMatchAgainst.some((pathToMatch) => {
             return history.location.pathname.includes(pathToMatch);
           })
@@ -58,7 +61,7 @@ const TabsContainer: React.FC = () => {
       // Otherwise return the current active tab index as a fallback
       return activeTabNumber;
     },
-    [history.location.pathname]
+    [history.location.pathname, tabConfig]
   );
 
   const [activeTab, setActiveTab] = React.useState(getActiveTab(0));
@@ -69,20 +72,38 @@ const TabsContainer: React.FC = () => {
 
   useEffect(() => {
     setActiveTab((activeTabNumber) => getActiveTab(activeTabNumber));
-  }, [history.location.pathname, getActiveTab]);
+  }, [history.location.pathname, tabConfig, getActiveTab]);
+
 
   useEffect(() => {
     const setTabConfigBasedOnRoles = () => {
       setTabConfig(() => {
         const tabsUserHasAccessTo: ITabConfig[] = [];
-
-        if (keycloak.hasRole(ALL_ROLES)) {
+        const hasRequiredRoles = true; //keycloak.hasRole(ALL_ROLES);
+        if (hasRequiredRoles) {
           tabsUserHasAccessTo.push({
             label: 'Home',
-            path: '/home/landing',
+            path: '/home/welcome',
             icon: <Home />
           });
-
+          /*
+          tabsUserHasAccessTo.push({
+            label: 'Interviews',
+            path: '/home/interview-list',
+            icon: <Dehaze />
+          });
+          */          
+          tabsUserHasAccessTo.push({
+            label: 'Interview',
+            path: '/home/interview-entry',
+            icon: <PostAdd />
+          });          
+          tabsUserHasAccessTo.push({
+            label: 'Settings',
+            path: '/home/settings',
+            icon: <Settings />
+          });          
+          /*          
           tabsUserHasAccessTo.push({
             label: 'Search',
             path: '/home/search',
@@ -119,6 +140,7 @@ const TabsContainer: React.FC = () => {
             path: '/home/activity',
             icon: <Assignment />
           });
+          */
         }
 
         return tabsUserHasAccessTo;

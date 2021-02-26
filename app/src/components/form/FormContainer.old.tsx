@@ -40,25 +40,33 @@ export interface IFormContainerProps extends IFormControlsComponentProps {
 }
 
 const FormContainer: React.FC<IFormContainerProps> = (props) => {
+  const invasivesApi = useInvasivesApi();
 
   const [schemas, setSchemas] = useState<{ schema: any; uiSchema: any }>({ schema: null, uiSchema: null });
-  setSchemas({
-    schema: {},
-    uiSchema: {}
-  });
-
 
   const [formRef, setFormRef] = useState(null);
+
+  useEffect(() => {
+    const getApiSpec = async () => {
+      const response = await invasivesApi.getCachedApiSpec();
+
+      setSchemas({
+        schema: { ...response.components.schemas[props.activity.activitySubtype], components: response.components },
+        uiSchema: RootUISchemas[props.activity.activitySubtype]
+      });
+    };
+
+    getApiSpec();
+  }, [props.activity.activitySubtype]);
 
   if (!schemas.schema || !schemas.uiSchema) {
     return <CircularProgress />;
   }
 
-  const isDisabled = props.isDisabled; // || props.activity?.sync?.status === ActivitySyncStatus.SYNC_SUCCESSFUL || false;
+  const isDisabled = props.isDisabled || props.activity?.sync?.status === ActivitySyncStatus.SYNC_SUCCESSFUL || false;
 
   return (
     <Box width="100%">
-      {/*
       <Box mb={3}>
         <FormControlsComponent
           onSubmit={() => formRef.submit()}
@@ -69,16 +77,15 @@ const FormContainer: React.FC<IFormContainerProps> = (props) => {
           hideCheckFormForErrors={props.hideCheckFormForErrors}
         />
       </Box>
-      */}
 
       <ThemeProvider theme={rjsfTheme}>
         <Form
           ObjectFieldTemplate={ObjectFieldTemplate}
           FieldTemplate={FieldTemplate}
           ArrayFieldTemplate={ArrayFieldTemplate}
-          key={props.anglerInterview?._id}
+          key={props.activity?._id}
           disabled={isDisabled}
-          formData={null}//{props.anglerInterview?.formData || null}
+          formData={props.activity?.formData || null}
           schema={schemas.schema}
           uiSchema={schemas.uiSchema}
           liveValidate={false}
@@ -134,7 +141,6 @@ const FormContainer: React.FC<IFormContainerProps> = (props) => {
         </Form>
       </ThemeProvider>
 
-      {/*
       <Box mt={3}>
         <FormControlsComponent
           onSubmit={() => formRef.submit()}
@@ -144,8 +150,6 @@ const FormContainer: React.FC<IFormContainerProps> = (props) => {
           activitySubtype={props.activity.activitySubtype}
         />
       </Box>
-      */}
-
     </Box>
   );
 };

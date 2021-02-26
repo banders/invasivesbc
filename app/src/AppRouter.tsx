@@ -11,8 +11,8 @@ import AppRoute from 'utils/AppRoute';
 
 interface IAppRouterProps {
   deviceInfo: any;
-  keycloak: any;
-  keycloakConfig: any;
+  //keycloak: any;
+  //keycloakConfig: any;
 }
 
 const AppRouter: React.FC<IAppRouterProps> = (props) => {
@@ -21,12 +21,12 @@ const AppRouter: React.FC<IAppRouterProps> = (props) => {
   const [layout, setLayout] = useState<React.FC<any>>(null);
 
   const getTitle = (page: string) => {
-    return `InvasivesBC - ${page}`;
+    return `River Guardian - ${page}`;
   };
 
   useEffect(() => {
     // If on mobile and have no internet connection, then bypass keycloak
-    const newLayout = window['cordova'] && !networkContext?.connected ? PublicLayout : AuthLayout;
+    const newLayout = PublicLayout; //window['cordova'] && !networkContext?.connected ? PublicLayout : AuthLayout;
 
     setLayout(() => newLayout);
   }, [networkContext]);
@@ -35,6 +35,8 @@ const AppRouter: React.FC<IAppRouterProps> = (props) => {
     return <CircularProgress />;
   }
 
+  /*
+  original return 
   return (
     <Switch>
       <Redirect exact from="/" to="/home" />
@@ -47,6 +49,23 @@ const AppRouter: React.FC<IAppRouterProps> = (props) => {
         layout={layout}
         keycloak={props.keycloak}
         keycloakConfig={props.keycloakConfig}
+      />
+      <AppRoute title="*" path="*" component={() => <Redirect to="/page-not-found" />} />
+    </Switch>
+  );
+  */
+
+  /* modified return */
+  return (
+    <Switch>
+      <Redirect exact from="/" to="/home" />
+      <AppRoute path="/forbidden" title={getTitle('Forbidden')} component={AccessDenied} layout={PublicLayout} />
+      <AppRoute path="/page-not-found" title={getTitle('Not Found')} component={NotFoundPage} layout={PublicLayout} />
+      <AppRoute
+        path="/home"
+        title={getTitle('Home')}
+        component={HomeRouter}
+        layout={layout}
       />
       <AppRoute title="*" path="*" component={() => <Redirect to="/page-not-found" />} />
     </Switch>

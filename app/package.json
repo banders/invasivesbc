@@ -1,11 +1,11 @@
 {
-  "name": "invasivesbci-app",
+  "name": "river-guardian-app",
   "version": "0.0.0",
-  "description": "Invasives BC - Cross Platform 'Ionic' Application",
+  "description": "River Guardian App",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bcgov/invasivesbc.git"
+    "url": "https://github.com/banders/river-guardian-app"
   },
   "engines": {
     "node": ">= 10.0.0",

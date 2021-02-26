@@ -2,18 +2,22 @@ import { ALL_ROLES } from 'constants/roles';
 import ActivitiesPage from 'features/home/activities/ActivitiesPage';
 import ActivityPage from 'features/home/activity/ActivityPage';
 import HomeLayout from 'features/home/HomeLayout';
-import MapPage from 'features/home/map/MapPage';
-import PlanPage from 'features/home/plan/PlanPage';
-import ReferencesActivityPage from 'features/home/references/ReferencesActivityPage';
-import ReferencesPage from 'features/home/references/ReferencesPage';
-import BulkEditActivitiesPage from 'features/home/search/BulkEditActivitiesPage';
-import TreatmentCreationStepperPage from 'features/home/activity/TreatmentCreationStepperPage';
-import ObservationCreationStepperPage from 'features/home/activity/ObservationCreationStepperPage';
-import SearchActivityPage from 'features/home/search/SearchActivityPage';
-import LandingPage from 'features/home/landing/LandingPage';
-import SearchPage from 'features/home/search/SearchPage';
+import Welcome from 'components/welcome/Welcome';
+import InterviewList from 'components/interview-list/InterviewList';
+import InterviewForm from 'components/interview-form/InterviewForm';
+import Settings from 'components/settings/Settings'
+//import MapPage from 'features/home/map/MapPage';
+//import PlanPage from 'features/home/plan/PlanPage';
+//import ReferencesActivityPage from 'features/home/references/ReferencesActivityPage';
+//import ReferencesPage from 'features/home/references/ReferencesPage';
+//import BulkEditActivitiesPage from 'features/home/search/BulkEditActivitiesPage';
+//import TreatmentCreationStepperPage from 'features/home/activity/TreatmentCreationStepperPage';
+//import ObservationCreationStepperPage from 'features/home/activity/ObservationCreationStepperPage';
+//import SearchActivityPage from 'features/home/search/SearchActivityPage';
+//import LandingPage from 'features/home/landing/LandingPage';
+//import SearchPage from 'features/home/search/SearchPage';
 import React from 'react';
-import { Redirect, Switch } from 'react-router';
+import { Redirect, Switch, Route } from 'react-router';
 import AppRoute from 'utils/AppRoute';
 import PrivateRoute from 'utils/PrivateRoute';
 
@@ -23,11 +27,13 @@ interface IHomeRouterProps {
 
 const HomeRouter: React.FC<IHomeRouterProps> = (props) => {
   const getTitle = (page: string) => {
-    return `InvasivesBC - ${page}`;
+    return `River Guardian - ${page}`;
   };
+
 
   return (
     <Switch>
+    {/*
       <Redirect exact from="/home" to="/home/landing" />
       <PrivateRoute
         exact
@@ -135,10 +141,23 @@ const HomeRouter: React.FC<IHomeRouterProps> = (props) => {
         component={LandingPage}
         componentProps={props}
       />
+      */}
+
+      <Redirect exact from="/home" to="/home/welcome" />
+      
+      <AppRoute path="/home/welcome" title="Home" component={Welcome} layout={HomeLayout} />
+      <AppRoute path="/home/interview-list" title="Interviews" component={InterviewList} layout={HomeLayout} />
+      <AppRoute path="/home/interview-entry/:interviewId?" title="Interview" component={InterviewForm} layout={HomeLayout} />
+      <AppRoute path="/home/settings" title="Settings" component={Settings} layout={HomeLayout} />
+
       {/*  Catch any unknown routes, and re-direct to the not found page */}
       <AppRoute title="*" path="/home/*" component={() => <Redirect to="/page-not-found" />} />
     </Switch>
   );
+
 };
+
+
+
 
 export default HomeRouter;

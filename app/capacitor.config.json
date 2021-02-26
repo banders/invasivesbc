@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.starter",
-  "appName": "InvasivesBC-Ionic",
+  "appName": "RiverGuardian-Ionic",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "build",

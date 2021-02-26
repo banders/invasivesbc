@@ -21,7 +21,7 @@ const API_URL =
  *
  * @return {*}
  */
-const useApi = () => {
+const useRemoteApi = () => {
   const { keycloak } = useKeycloak();
   const instance = useMemo(() => {
     return axios.create({
@@ -41,8 +41,8 @@ const useApi = () => {
  *
  * @return {object} object whose properties are supported api methods.
  */
-export const useInvasivesApi = () => {
-  const api = useApi();
+export const useRiverGuardianApi = () => {
+  const api = useRemoteApi();
 
   const databaseContext = useContext(DatabaseContext);
 
@@ -185,7 +185,7 @@ export const useInvasivesApi = () => {
   };
 
   /**
-   * Fetch the api json-schema spec.
+   * Fetch the OpenAPI specification
    *
    * @return {*}  {Promise<any>}
    */

@@ -1,4 +1,4 @@
-import { Box, Container, Collapse, IconButton } from '@material-ui/core';
+import { Box, Collapse, IconButton } from '@material-ui/core';
 import Badge from '@material-ui/core/Badge';
 import { Close, MarkunreadMailbox } from '@material-ui/icons';
 import { Alert } from '@material-ui/lab';
@@ -10,7 +10,6 @@ import { DatabaseContext } from 'contexts/DatabaseContext';
 import React, { useContext, useEffect, useState, useCallback } from 'react';
 
 const HomeLayout = (props: any) => {
-  /*
   const databaseContext = useContext(DatabaseContext);
   const databaseChangesContext = useContext(DatabaseChangesContext);
 
@@ -68,12 +67,10 @@ const HomeLayout = (props: any) => {
 
     setIsOpen(false);
   };
-  */
 
   return (
     <Box width="inherit" height="100%" display="flex" flex="1" flexDirection="column">
-      <TabsContainer />    
-      {/*
+      <TabsContainer />
       <Collapse timeout={50} in={isOpen}>
         <Alert
           // severity can't be null so this is a workaround
@@ -95,11 +92,8 @@ const HomeLayout = (props: any) => {
           <strong>{notification == null ? null : notification.text}</strong>
         </Alert>
       </Collapse>
-      */}
       <Box mb="43px" height="inherit" width="inherit" overflow="auto">
-        <Container>
-          {props.children}
-        </Container>
+        {props.children}
       </Box>
       <Box position="absolute" bottom="0" left="0" right="0" bgcolor="primary.main" color="primary.contrastText">
         <Footer />
