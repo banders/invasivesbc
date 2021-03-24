@@ -121,6 +121,7 @@ const BulkEditActivitiesPage: React.FC<IBulkEditActivitiesPage> = (props) => {
 
       <Accordion>
         <AccordionDetails className={props.classes.formContainer}>
+          {/*
           <FormContainer
             activity={activity}
             onFormChange={onFormChange}
@@ -130,6 +131,7 @@ const BulkEditActivitiesPage: React.FC<IBulkEditActivitiesPage> = (props) => {
             onFormSubmitError={onFormSubmitError}
             hideCheckFormForErrors={true}
           />
+        */}
         </AccordionDetails>
       </Accordion>
 

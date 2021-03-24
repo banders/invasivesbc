@@ -191,6 +191,7 @@ const SearchActivityPage: React.FC<ISearchActivityPage> = (props) => {
         </Button>
       </Box>
 
+      {/*
       <ActivityComponent
         customValidation={getCustomValidator([
           getAreaValidator(activity.activitySubtype),
@@ -209,7 +210,7 @@ const SearchActivityPage: React.FC<ISearchActivityPage> = (props) => {
         setParentFormRef={setParentFormRef}
         hideCheckFormForErrors={true}
       />
-
+      */}
       <Box mt={3}>
         <Button variant="contained" color="primary" startIcon={<Save />} onClick={() => parentFormRef?.submit()}>
           Update Activity

@@ -147,7 +147,7 @@ const HomeRouter: React.FC<IHomeRouterProps> = (props) => {
       
       <AppRoute path="/home/welcome" title="Home" component={Welcome} layout={HomeLayout} />
       <AppRoute path="/home/interview-list" title="Interviews" component={InterviewList} layout={HomeLayout} />
-      <AppRoute path="/home/interview-entry/:interviewId?" title="Interview" component={InterviewForm} layout={HomeLayout} />
+      <AppRoute path="/home/interview-entry/:anglerInterviewId?" title="Interview" component={InterviewForm} layout={HomeLayout} />
       <AppRoute path="/home/settings" title="Settings" component={Settings} layout={HomeLayout} />
 
       {/*  Catch any unknown routes, and re-direct to the not found page */}

@@ -363,6 +363,7 @@ const ActivityPage: React.FC<IActivityPageProps> = (props) => {
 
   return (
     <Container className={props.classes.container}>
+      {/*
       <ActivityComponent
         customValidation={getCustomValidator([
           getAreaValidator(doc.activitySubtype),
@@ -383,6 +384,7 @@ const ActivityPage: React.FC<IActivityPageProps> = (props) => {
         copyFormData={() => copyFormData()}
         cloneActivityButton={generateCloneActivityButton}
       />
+    */}
     </Container>
   );
 };

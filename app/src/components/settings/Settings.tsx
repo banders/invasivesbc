@@ -3,10 +3,6 @@ import {
   Button,
 } from '@material-ui/core';
 import { DatabaseContext } from 'contexts/DatabaseContext';
-import { DocType } from 'constants/database';
-//import { useRiverGuardianApi } from 'hooks/useRiverGuardianApi';
-import { IAnglerInterview } from 'interfaces/angler-interview-interfaces';
-import { formDataToAnglerInterview, saveAnglerInterviewToDB } from 'utils/saveAnglerInterview';
 
 const Settings: React.FC = (props) => {
 

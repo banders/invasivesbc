@@ -21,7 +21,7 @@ const App: React.FC<IAppProps> = (props) => {
   const keycloakInstanceConfig: KeycloakConfig = {
     realm: 'dfmlcg7z',
     url: 'https://dev.oidc.gov.bc.ca/auth/',
-    clientId: 'river-guardian'
+    clientId: 'invasives-bc'
   };
 
 

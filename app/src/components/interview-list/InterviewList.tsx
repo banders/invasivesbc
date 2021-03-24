@@ -2,11 +2,14 @@ import React, { useContext, useCallback, useState, useEffect } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import { Link } from "react-router-dom";
 import { DatabaseContext } from 'contexts/DatabaseContext';
 import { DatabaseChangesContext } from 'contexts/DatabaseChangesContext';
 import { DocType } from 'constants/database';
-import { IAnglerInterview } from 'interfaces/angler-interview-interfaces';
+import { AnglerInterview } from 'models/angler-interview';
+import { deleteAnglerInterviewFromDB } from 'utils/anglerInterviewDataAccess';
+import { saveAs } from 'file-saver';
 import moment from 'moment';
 
 const InterviewList: React.FC = (props) => {
@@ -33,18 +36,32 @@ const InterviewList: React.FC = (props) => {
     //let alldocs = await databaseContext.database.allDocs({include_docs: true})
     //console.log(alldocs)
 
-    if (docs.docs.length > 0) {
-      console.log(docs.docs)
-    	setAnglerInterviews([...docs.docs]);
-    }
+  	setAnglerInterviews([...docs.docs]);
+
   }, [databaseChangesContext, databaseContext.database]);
 
 
-  useEffect(() => {
-    const updateComponent = () => {
-      getAnglerInterviews();
-    };
-    updateComponent();
+  const refreshAnglerInterviews = () => {
+    getAnglerInterviews();
+  };
+
+  const exportAnglerInterviews = (anglerInterviews: AnglerInterview[]) => {
+    //implementation note:
+    //uses the 'file saver' tool from here: https://github.com/eligrey/FileSaver.js
+    const data = [];
+    anglerInterviews.forEach(anglerInterview => {
+      data.push(anglerInterview);
+    })
+    var blob = new Blob([JSON.stringify(data)], {type: "application/json;charset=utf-8"});
+    saveAs(blob, "angler-interviews.json");
+  };
+
+  const deleted = () => {
+    refreshAnglerInterviews();
+  }
+
+  useEffect(() => {    
+    refreshAnglerInterviews();
   }, [databaseChangesContext, getAnglerInterviews]);
 
   return (
@@ -52,25 +69,41 @@ const InterviewList: React.FC = (props) => {
       <div>
         {anglerInterviews.map((anglerInterview, index) => {
           return (          
-            <InterviewRow key={anglerInterview._id} anglerInterview={anglerInterview}></InterviewRow>
+            <InterviewRow 
+              key={anglerInterview._id} 
+              anglerInterview={anglerInterview}
+              onDelete={deleted}
+              ></InterviewRow>
           )
         })}
       </div>
+      <Button
+            variant="contained"
+            color="default"
+            size="small"
+            onClick={() => {exportAnglerInterviews(anglerInterviews)}}>
+            Export all <SaveAltIcon />
+          </Button>
     </div>
   );
 };
 
 export interface IInterviewRowProps {
-  anglerInterview: IAnglerInterview;
+  anglerInterview: AnglerInterview;
+  onDelete?: Function;
 }
 
 const InterviewRow: React.FC<IInterviewRowProps> = (props) => {
 
   const anglerInterview = props.anglerInterview;
+  const databaseContext = useContext(DatabaseContext);
 
-  const deleteAnglerInterview = useCallback(async (anglerInterview: IAnglerInterview) => {
-    console.log("todo: delete")
-  }, []);
+  const deleteAnglerInterview = useCallback(async (anglerInterview: AnglerInterview) => {
+    deleteAnglerInterviewFromDB(databaseContext, anglerInterview)
+    if (props.onDelete) {
+      props.onDelete()
+    }
+  }, [databaseContext.database]);
 
   return (  
     <Grid container spacing={3}>

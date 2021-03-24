@@ -72,6 +72,7 @@ const ReferencesActivityPage: React.FC<IReferencesActivityPage> = (props) => {
 
   return (
     <Container className={props.classes.container}>
+      {/*
       <ActivityComponent
         classes={classes}
         activity={doc}
@@ -81,6 +82,7 @@ const ReferencesActivityPage: React.FC<IReferencesActivityPage> = (props) => {
         extentState={{ extent, setExtent }}
         contextMenuState={{ state: contextMenuState, setContextMenuState }} // whether someone clicked, and click x & y
       />
+    */}
     </Container>
   );
 };

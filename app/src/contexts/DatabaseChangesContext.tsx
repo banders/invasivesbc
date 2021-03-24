@@ -12,7 +12,7 @@ export const DatabaseChangesContext = React.createContext<IDatabaseChanges>(null
  * @return {*}
  */
 export const DatabaseChangesContextProvider: React.FC = (props) => {
-  console.log("create DatabaseChangesContextProvider")
+  //console.log("create DatabaseChangesContextProvider")
   const databaseContext = useContext(DatabaseContext);
 
   const [databaseChanges, setDatabaseChanges] = useState<IDatabaseChanges>(null);

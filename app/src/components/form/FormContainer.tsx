@@ -1,4 +1,4 @@
-import { Box, CircularProgress, ThemeProvider, Typography } from '@material-ui/core';
+import { Box, ThemeProvider, Typography } from '@material-ui/core';
 import { IChangeEvent, ISubmitEvent } from '@rjsf/core';
 import Form from '@rjsf/material-ui';
 import { ActivitySyncStatus } from 'constants/activities';
@@ -10,13 +10,14 @@ import ObjectFieldTemplate from 'rjsf/templates/ObjectFieldTemplate';
 import RootUISchemas from 'rjsf/uiSchema/RootUISchemas';
 import rjsfTheme from 'themes/rjsfTheme';
 import FormControlsComponent, { IFormControlsComponentProps } from './FormControlsComponent';
-import { IAnglerInterview } from 'interfaces/angler-interview-interfaces';
 
 export interface IFormContainerProps extends IFormControlsComponentProps {
   classes?: any;
-  anglerInterview: IAnglerInterview;
+  schema: any;
+  uiSchema: any;
   customValidation?: any;
   isDisabled?: boolean;
+  initialFormData?: any;
   pasteFormData?: Function;
   copyFormData?: Function;
   setParentFormRef?: Function;
@@ -41,18 +42,7 @@ export interface IFormContainerProps extends IFormControlsComponentProps {
 
 const FormContainer: React.FC<IFormContainerProps> = (props) => {
 
-  const [schemas, setSchemas] = useState<{ schema: any; uiSchema: any }>({ schema: null, uiSchema: null });
-  setSchemas({
-    schema: {},
-    uiSchema: {}
-  });
-
-
   const [formRef, setFormRef] = useState(null);
-
-  if (!schemas.schema || !schemas.uiSchema) {
-    return <CircularProgress />;
-  }
 
   const isDisabled = props.isDisabled; // || props.activity?.sync?.status === ActivitySyncStatus.SYNC_SUCCESSFUL || false;
 
@@ -76,11 +66,11 @@ const FormContainer: React.FC<IFormContainerProps> = (props) => {
           ObjectFieldTemplate={ObjectFieldTemplate}
           FieldTemplate={FieldTemplate}
           ArrayFieldTemplate={ArrayFieldTemplate}
-          key={props.anglerInterview?._id}
+          key={null}
           disabled={isDisabled}
-          formData={null}//{props.anglerInterview?.formData || null}
-          schema={schemas.schema}
-          uiSchema={schemas.uiSchema}
+          formData={props.initialFormData || null}
+          schema={props.schema}
+          uiSchema={props.uiSchema}
           liveValidate={false}
           showErrorList={true}
           validate={props.customValidation}
