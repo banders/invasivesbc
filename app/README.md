@@ -1,4 +1,4 @@
-# bcgov/invasivesbc/app
+# bcgov/river-guardian/app
 
 ## Documenation
 

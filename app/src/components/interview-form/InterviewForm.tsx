@@ -7,9 +7,12 @@ import { DocType } from 'constants/database';
 import { AnglerInterview } from 'models/angler-interview';
 import { saveAnglerInterviewToDB, loadAnglerInterviewFromDB } from 'utils/anglerInterviewDataAccess';
 import FormContainer, { IFormContainerProps } from 'components/form/FormContainer';
+import GeoLocationPicker from 'components/geolocation-picker/GeoLocationPicker';
 import { useDebouncedCallback } from 'use-debounce';
 
+
 const InterviewForm: React.FC = (props: any) => {
+  
   const initialAnglerInterviewId = props.match.params.anglerInterviewId;
 
   const databaseContext = useContext(DatabaseContext);
@@ -18,6 +21,7 @@ const InterviewForm: React.FC = (props: any) => {
   var [anglerInterviewId, setAnglerInterviewId] = useState<string>(initialAnglerInterviewId);
   var [isSaving, setIsSaving] = useState<boolean>(false);
   var [workInProgressFormData, setWorkInProgressFormData] = useState();
+  var [interviewLocation, setInterviewLocation] = useState<any>(null);
   
   const [schemas, setSchemas] = useState<{ schema: any; uiSchema: any }>({ 
     schema: {
@@ -38,6 +42,7 @@ const InterviewForm: React.FC = (props: any) => {
               "type": "object",
               "properties": {
                 "waterbody": {
+                  "title": "Waterbody",
                   "type": "string",
                   "enum": [
                     "Bull",    
@@ -54,7 +59,7 @@ const InterviewForm: React.FC = (props: any) => {
                     "White",
                     "Wigwam",
                     "Wildhorse"
-                  ]          
+                  ]       
                 },
                 "locationDescription": {
                   "title": "Location description",
@@ -198,10 +203,29 @@ const InterviewForm: React.FC = (props: any) => {
                             "No"
                           ],
                           "default": "No"
-                        },
-                        "ticketNumber": {
-                          "title": "Ticket number",
-                          "type": "string"                          
+                        }
+                        
+                      },
+                      "required": [
+                        "ticketIssued"
+                      ],
+                      "dependencies": {
+                        "ticketIssued": {
+                          "oneOf": [ 
+                            {
+                              "properties": {
+                                "ticketIssued": {
+                                  "enum": [
+                                    "Yes"
+                                  ]
+                                },
+                                "ticketNumber": {
+                                  "title": "Ticket number",
+                                  "type": "string"                          
+                                }
+                              }
+                            }
+                          ]
                         }
                       }
                     }           
@@ -325,7 +349,15 @@ const InterviewForm: React.FC = (props: any) => {
                           "type": "string",
                           "enum": [
                             "Alberta",
-                            "British Columbia"
+                            "British Columbia",                            
+                            "Manitoba",                            
+                            "Nova Scotia",
+                            "New Brunswick",
+                            "Newfoundland and Labrador",
+                            "Ontario",                            
+                            "Prince Edward Island",
+                            "Quebec",
+                            "Saskatchewan"
                           ], 
                           "default": "British Columbia"              
                         },
@@ -345,13 +377,15 @@ const InterviewForm: React.FC = (props: any) => {
               "title": "Angling",
               "type": "object",
               "properties": {
-                "method": {
+                "anglingMethod": {
                   "title": "Angling method",
                   "type": "string",
                   "enum": [
                     "Gear",
-                    "Fly"
-                  ]                         
+                    "Fly",
+                    "Not specified"
+                  ],
+                  "default": "Not specified" 
                 },
                 "targetSpecies": {
                   "title": "Target species",                  
@@ -392,14 +426,6 @@ const InterviewForm: React.FC = (props: any) => {
               "title": "Trip",
               "type": "object",
               "properties": {
-                "method": {
-                  "title": "Access method",
-                  "type": "string",
-                  "enum": [
-                    "Boat",
-                    "Foot"
-                  ]                   
-                },
                 "startTime": {
                   "title": "Start time",
                   "type": "string",
@@ -412,6 +438,16 @@ const InterviewForm: React.FC = (props: any) => {
                   "format": "date-time",
                   "default": new Date().toString()                                
                 },  
+                "accessMethod": {
+                  "title": "Access method",
+                  "type": "string",
+                  "enum": [                    
+                    "Boat",
+                    "Foot",
+                    "Not specified"
+                  ],
+                  "default": "Not specified"               
+                },
                 "anglingQuality": {
                   "title": "Angling quality",
                   "description": "1=low quality, 5=high quality",
@@ -440,7 +476,7 @@ const InterviewForm: React.FC = (props: any) => {
 
           //SCHEMA DEFINITIONS
           },
-          "definitions": {
+          "definitions": {            
             "species": {              
               "type": "string",
               "enum": [
@@ -478,17 +514,19 @@ const InterviewForm: React.FC = (props: any) => {
         }, 
 
         uiSchema: {
+        
+          
           "waterbodyAndLocation": {
+            "waterbody": {
+              "ui:emptyValue": "",
+              "ui:placeholder": "--Choose one--",
+              "ui:widget": "select"
+            },
             "ui:order": [              
               "waterbody",
               "*",
               "locationDescription"
-            ],
-            "waterbody": {
-              "ui:autofocus": true,
-              "ui:emptyValue": "",
-              "ui:autocomplete": "family-name"
-            },            
+            ]         
           },          
           "angler": {
             "ui:order": [              
@@ -510,7 +548,37 @@ const InterviewForm: React.FC = (props: any) => {
               }
             },            
           },
+          "guide": {
+            "isGuided": {
+              "ui:widget": "radio",
+              "ui:options": {
+                "inline": true
+              }
+            }
+          },
+          "infractions": {
+            "hadInfractions": {
+              "ui:widget": "radio",
+              "ui:options": {
+                "inline": true
+              }
+            }
+          },
+          "angling": {
+            "anglingMethod": {
+              "ui:widget": "radio",
+              "ui:options": {
+                "inline": true
+              }
+            }            
+          },
           "trip": {
+            "accessMethod": {
+              "ui:widget": "radio",
+              "ui:options": {
+                "inline": true
+              }
+            },
             "anglingQuality": {
               "ui:widget": "radio",
               "ui:options": {
@@ -529,7 +597,7 @@ const InterviewForm: React.FC = (props: any) => {
                 "inline": true
               }
             }, 
-          },
+          },          
           "catches": {
             "ui:title": "Catches",
             "ui:description": "Tap the 'Add Item' button to the right to add a catch",
@@ -559,6 +627,8 @@ const InterviewForm: React.FC = (props: any) => {
   );
   const classes = useStyles();
 
+
+
   const initAnglerInterview = async () => {
     console.log("init: "+anglerInterviewId)
     var initialAnglerInterview = null;
@@ -574,9 +644,12 @@ const InterviewForm: React.FC = (props: any) => {
         }
       }      
     }
-    const formData = initialAnglerInterview ? initialAnglerInterview.formData || {} : {};
+
+    const formData = initialAnglerInterview ? initialAnglerInterview.formData || {} : {};     
     setWorkInProgressFormData(formData);  
     
+    const interviewLocation = initialAnglerInterview ? initialAnglerInterview.interviewLocation : null;   
+    setInterviewLocation(interviewLocation);
   };  
 
   useEffect(() => { 
@@ -584,31 +657,43 @@ const InterviewForm: React.FC = (props: any) => {
   }, [databaseContext.database]);
 
   const debouncedSave = useDebouncedCallback(
-      (formData: any, anglerInterviewIdToSave?: string) => { 
-        save(formData, anglerInterviewIdToSave) 
+      (formData: any, interviewLocation: any, anglerInterviewIdToSave?: string) => { 
+        save(formData, interviewLocation, anglerInterviewIdToSave) 
       }, 
       1000    
   );
 
-  const save = useCallback(async (formData: any, anglerInterviewIdToSave?: string) => {
+  const save = useCallback(async (formData: any, interviewLocation: any, anglerInterviewIdToSave?: string) => {
     setIsSaving(true)
-    //console.log(formData)
-    console.log("save: "+anglerInterviewIdToSave); 
-    const anglerInterview: AnglerInterview = new AnglerInterview({_id: anglerInterviewIdToSave, formData: formData})
+    const anglerInterviewData = Object.assign(
+      {
+        _id: anglerInterviewIdToSave, 
+        formData: formData}, 
+      {
+        interviewLocation: interviewLocation
+      });
+    const anglerInterview: AnglerInterview = new AnglerInterview(anglerInterviewData)
+    console.log(anglerInterview)
     const savedAnglerInterview = await saveAnglerInterviewToDB(databaseContext, anglerInterview);  
-    //console.log("before: "+anglerInterviewId);
     setAnglerInterviewId(savedAnglerInterview._id);
-    //console.log("after: "+anglerInterviewId);
     setIsSaving(false)
     setWorkInProgressFormData(savedAnglerInterview.formData)
   }, [databaseContext.database]);
+
+  const onInterviewLocationChanged = (geometry: any) => {
+    interviewLocation = geometry;
+    console.log(interviewLocation);
+    if (anglerInterviewId) {
+      debouncedSave(workInProgressFormData, interviewLocation, anglerInterviewId)  
+    }
+  }
 
   const onFormChange = (data) => {
     //console.log("form changed")
     //console.log(data.formData);
     workInProgressFormData = data.formData; //update the state variable, but prevent re-render
     if (anglerInterviewId) {
-      debouncedSave(workInProgressFormData, anglerInterviewId)  
+      debouncedSave(workInProgressFormData, interviewLocation, anglerInterviewId)  
     }
     
   }
@@ -629,6 +714,15 @@ const InterviewForm: React.FC = (props: any) => {
   return (
   	<div>
     	
+      <br/>
+
+      <GeoLocationPicker 
+        initialLocation={interviewLocation}
+        onLocationChanged={(geometry) => onInterviewLocationChanged(geometry)}
+        />
+
+      <br/>
+
       <FormContainer {...{  
         schema: schemas.schema,
         uiSchema: schemas.uiSchema,
@@ -641,7 +735,7 @@ const InterviewForm: React.FC = (props: any) => {
         variant="contained" 
         color="primary" 
         disabled={isSaving}
-        onClick={() => save(workInProgressFormData, anglerInterviewId)}
+        onClick={() => save(workInProgressFormData, interviewLocation, anglerInterviewId)}
         style={{marginBottom: "40px"}}>
         { isSaving ? "Saving..." : "Save" }        
       </Button>

@@ -8,14 +8,16 @@ export class AnglerInterview {
   createTime: Date;
   updateTime: Date;
   formData: any;
+  interviewLocation: any;
 
   constructor(data: any = {}) {
-	this._id = data._id || uuidv4();
-	this._rev = data._rev || null;
+	  this._id = data._id || uuidv4();
+	  this._rev = data._rev || null;
   	this.docType = DocType.ANGLER_INTERVIEW;
   	this.createTime = data.createTime || new Date();
   	this.updateTime = data.updateTime || this.createTime;
   	this.formData = data.formData || null;
+    this.interviewLocation = data.interviewLocation
   }
 
   public toClasslessObj(): any {
