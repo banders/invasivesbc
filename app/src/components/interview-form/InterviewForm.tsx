@@ -69,6 +69,8 @@ const InterviewForm: React.FC = (props: any) => {
               "required": [
                 "waterbody"
               ],
+              /*this dependency section causes jsonschema-react warnings because not all 
+              waterbody options are included in the 'oneOf' list*/
               "dependencies": {
                 "waterbody": {
                   "oneOf": [            
@@ -150,6 +152,7 @@ const InterviewForm: React.FC = (props: any) => {
                   ]
                 }
               }
+              
             },
 
             "infractions": {
@@ -168,7 +171,7 @@ const InterviewForm: React.FC = (props: any) => {
               },
               "required": [
                 "hadInfractions"
-              ],
+              ],              
               "dependencies": {
                 "hadInfractions": {
                   "oneOf": [            
@@ -208,7 +211,7 @@ const InterviewForm: React.FC = (props: any) => {
                       },
                       "required": [
                         "ticketIssued"
-                      ],
+                      ],                      
                       "dependencies": {
                         "ticketIssued": {
                           "oneOf": [ 
@@ -222,13 +225,41 @@ const InterviewForm: React.FC = (props: any) => {
                                 "ticketNumber": {
                                   "title": "Ticket number",
                                   "type": "string"                          
+                                },
+                                "ticketType": {
+                                  "title": "Ticket type",
+                                  "type": "string",
+                                  "enum": [
+                                    "Warning",
+                                    "Charge",
+                                    "Not specified"
+                                  ],
+                                  "default": "Not specified"                      
+                                }
+                              }
+                            },
+                            {
+                              "properties": {
+                                "ticketIssued": {
+                                  "enum": [
+                                    "No"
+                                  ]
                                 }
                               }
                             }
                           ]
                         }
+                      }                      
+                    },
+                    {
+                      "properties": {
+                        "hadInfractions": {
+                          "enum": [
+                            "No"
+                          ]
+                        },
                       }
-                    }           
+                    }          
                   ]
                 }
               }
@@ -250,7 +281,7 @@ const InterviewForm: React.FC = (props: any) => {
               },
               "required": [
                 "isGuided"
-              ],
+              ],              
               "dependencies": {
                 "isGuided": {
                   "oneOf": [            
@@ -282,10 +313,19 @@ const InterviewForm: React.FC = (props: any) => {
                           "type": "string"                          
                         }
                       }
-                    }           
+                    } ,
+                    {
+                      "properties": {
+                        "isGuided": {
+                          "enum": [
+                            "No"
+                          ]
+                        }
+                      }
+                    }         
                   ]
                 }
-              }
+              }              
             },
 
             "angler": {
@@ -335,7 +375,7 @@ const InterviewForm: React.FC = (props: any) => {
               },
               "required": [
                 "anglerCountry"
-              ],
+              ],              
               "dependencies": {
                 "anglerCountry": {
                   "oneOf": [            
@@ -366,7 +406,7 @@ const InterviewForm: React.FC = (props: any) => {
                           "type": "string"                          
                         }                      
                       }
-                    }           
+                    }
                   ]
                 }
               }
@@ -562,6 +602,12 @@ const InterviewForm: React.FC = (props: any) => {
               "ui:options": {
                 "inline": true
               }
+            },
+            "ticketType": {
+              "ui:widget": "radio",
+              "ui:options": {
+                "inline": true
+              }
             }
           },
           "angling": {
@@ -630,7 +676,6 @@ const InterviewForm: React.FC = (props: any) => {
 
 
   const initAnglerInterview = async () => {
-    console.log("init: "+anglerInterviewId)
     var initialAnglerInterview = null;
     if (anglerInterviewId) {
       try {
@@ -648,7 +693,8 @@ const InterviewForm: React.FC = (props: any) => {
     const formData = initialAnglerInterview ? initialAnglerInterview.formData || {} : {};     
     setWorkInProgressFormData(formData);  
     
-    const interviewLocation = initialAnglerInterview ? initialAnglerInterview.interviewLocation : null;   
+    const interviewLocation = initialAnglerInterview ? initialAnglerInterview.interviewLocation : null;  
+    console.log(interviewLocation) 
     setInterviewLocation(interviewLocation);
   };  
 
@@ -668,23 +714,23 @@ const InterviewForm: React.FC = (props: any) => {
     const anglerInterviewData = Object.assign(
       {
         _id: anglerInterviewIdToSave, 
-        formData: formData}, 
+        formData: formData
+      }, 
       {
         interviewLocation: interviewLocation
       });
+    console.log(anglerInterviewData)
     const anglerInterview: AnglerInterview = new AnglerInterview(anglerInterviewData)
-    console.log(anglerInterview)
     const savedAnglerInterview = await saveAnglerInterviewToDB(databaseContext, anglerInterview);  
     setAnglerInterviewId(savedAnglerInterview._id);
     setIsSaving(false)
     setWorkInProgressFormData(savedAnglerInterview.formData)
   }, [databaseContext.database]);
 
-  const onInterviewLocationChanged = (geometry: any) => {
-    interviewLocation = geometry;
-    console.log(interviewLocation);
+  const onInterviewLocationChanged = (interviewLocation: any) => {
+    setInterviewLocation(interviewLocation);
     if (anglerInterviewId) {
-      debouncedSave(workInProgressFormData, interviewLocation, anglerInterviewId)  
+      save(workInProgressFormData, interviewLocation, anglerInterviewId)  
     }
   }
 
@@ -715,7 +761,6 @@ const InterviewForm: React.FC = (props: any) => {
   	<div>
     	
       <br/>
-
       <GeoLocationPicker 
         initialLocation={interviewLocation}
         onLocationChanged={(geometry) => onInterviewLocationChanged(geometry)}

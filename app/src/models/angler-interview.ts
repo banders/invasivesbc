@@ -27,7 +27,8 @@ export class AnglerInterview {
   		docType: this.docType,
   		createTime: this.createTime,
   		updateTime: this.updateTime,
-  		formData: this.formData
+  		formData: this.formData,
+      interviewLocation: this.interviewLocation
   	}
   }
   
