@@ -5,9 +5,9 @@
 
 ## Introduction
 
-Invasive species are non-native plants and animals whose introduction and spread in British Columbia cause significant economic, social or environmental damage. This application tracks the observation, treatment, and monitoring of invasive species in the Province of British Columbia.
+River guardian programs collect information about angling activities by interviewing anglers.  
 
-This project is part of the Species and Ecosystems Information System Modernization (SEISM) program.
+This project includes a mobile-friendly app for use by river guardians to record information collected by intervewing anglers.
 
 ## Table of Contents
 
@@ -30,28 +30,18 @@ This application is in active development and has not yet been released.
 
 ## Audience
 
-Anyone with a valid IDIR or BCeID login may access the application to view data that is being tracked.
+The application is intended for use by:
 
-In addition, the application is intended for use by:
-
-* Surveyors who observe and record the absence, presence, and spread of invasive species
-* Subject matter experts who perform a variety of duties, including to record and analyze data and create action plans
-* Contractors who implement recommended treatments for observed invasive species
-* Administrators who manage the application and its users
+* River guardians (i.e. people who conduct angler interviews and record the information collected).
 
 ## Features
 
 This application is anticipated to include the following main features:
 
-1. Support for IDIR and BCeID access
-1. User roles and permissions management
-1. Interactive maps displaying multiple data layers
-1. Observations of invasive species absence/presence
-1. Recommendations, planning, and application records of treatments
-1. Monitoring of treatment outcomes
-1. Query and export of data
-1. Auditing and reports
-1. Bulk data entry and mobile device data entry
+1. An interactive form to record information collected during angler interviews
+1. Support for offline work, so that app can be used "in the field" where internet access bmay be restricted
+1. An interactive map to identify the location of an angler interview
+1. Ability to export a list of all angler interviews
 
 ## Getting Help or Reporting an Issue
 
@@ -65,7 +55,9 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 ## Architecture
 
-This application uses PostgreSQL (with PostGIS), Ionic/React (for Web, IOS and Android). Our environments run on an OpenShift container platform cluster.
+This project was forked from the InvasivesBC project.  The Invasives project include multiple components, including a database, an API and a mobile app.  This project does
+not utilize the database or API (although the source files for those component are currently still included in the repo).  This project focuses only on the mobile app 
+(Ionic + React)
 
 ## Project Structure
 
@@ -82,13 +74,7 @@ This application uses PostgreSQL (with PostGIS), Ionic/React (for Web, IOS and A
     CONTRIBUTING.md            - Contributing Guidelines
     LICENSE                    - License
 
-## Documentation
-
-## Requirements
-
-We are using Visual Code for our IDE due to the excellent integration of our tolls and utilities.
-
-### Development
+## Development
 
 Ionic/React
 
@@ -150,10 +136,6 @@ On MacOS, in the app directory:
 
 xCode will open and, after a short delay, will allow you to run the application in the simulator.
 
-
-## Acknowledgements
-
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)]()
 
 ## License
 
